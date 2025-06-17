@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<!-- Hero Section -->
+<div class="hero-section position-relative mb-5">
+    <div class="hero-image" style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+        <div class="hero-overlay"></div>
+        <div class="container position-relative">
+            <div class="row min-vh-50 align-items-center">
+                <div class="col-md-8 text-white">
+                    <h1 class="display-4 fw-bold mb-4">Khám phá hương vị KFC</h1>
+                    <p class="lead mb-4">Thưởng thức những món ăn ngon nhất với công thức độc quyền từ KFC</p>
+                    <a href="@Url.Action("Index", "Product")" class="btn btn-primary btn-lg">
+                        <i class="fas fa-utensils me-2"></i>Xem thực đơn
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Categories -->
+<div class="container mb-5">
+    <h2 class="text-center mb-4">Danh mục nổi bật</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Gà rán">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Gà rán</h5>
+                    <p class="card-text text-muted">Thưởng thức hương vị gà rán độc quyền từ KFC</p>
+                    <a href="#" class="btn btn-outline-primary">Xem thêm</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Burger">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Burger</h5>
+                    <p class="card-text text-muted">Những chiếc burger thơm ngon với nhân bò béo ngậy</p>
+                    <a href="#" class="btn btn-outline-primary">Xem thêm</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="card-img-top" alt="Đồ uống">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Đồ uống</h5>
+                    <p class="card-text text-muted">Các loại đồ uống giải khát tươi mát</p>
+                    <a href="#" class="btn btn-outline-primary">Xem thêm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Special Offers -->
+<div class="bg-light py-5 mb-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Khuyến mãi đặc biệt</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="img-fluid rounded-start h-100 object-fit-cover" alt="Combo gia đình">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Combo gia đình</h5>
+                                <p class="card-text text-muted">Giảm giá 20% cho combo từ 4 người trở lên</p>
+                                <p class="card-text"><small class="text-muted">Áp dụng đến 31/12/2024</small></p>
+                                <a href="#" class="btn btn-primary">Đặt ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" class="img-fluid rounded-start h-100 object-fit-cover" alt="Burger mới">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Burger mới</h5>
+                                <p class="card-text text-muted">Mua 2 burger bất kỳ tặng 1 ly nước</p>
+                                <p class="card-text"><small class="text-muted">Áp dụng đến 31/12/2024</small></p>
+                                <a href="#" class="btn btn-primary">Đặt ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Why Choose Us -->
+<div class="container mb-5">
+    <h2 class="text-center mb-4">Tại sao chọn chúng tôi?</h2>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="text-center">
+                <i class="fas fa-utensils fa-3x text-primary mb-3"></i>
+                <h5>Chất lượng</h5>
+                <p class="text-muted">Nguyên liệu tươi ngon, đảm bảo vệ sinh</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <i class="fas fa-truck fa-3x text-primary mb-3"></i>
+                <h5>Giao hàng nhanh</h5>
+                <p class="text-muted">Giao hàng trong vòng 30 phút</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <i class="fas fa-percent fa-3x text-primary mb-3"></i>
+                <h5>Giá tốt</h5>
+                <p class="text-muted">Nhiều ưu đãi và khuyến mãi hấp dẫn</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+                <h5>Hỗ trợ 24/7</h5>
+                <p class="text-muted">Đội ngũ hỗ trợ nhiệt tình, chu đáo</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .hero-section {
+            margin-top: -1.5rem;
+        }
+        
+        .hero-image {
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
+        }
+        
+        .min-vh-50 {
+            min-height: 50vh;
+        }
+        
+        .object-fit-cover {
+            object-fit: cover;
+        }
+    </style>
+}

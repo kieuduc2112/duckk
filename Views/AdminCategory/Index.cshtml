@@ -1,0 +1,49 @@
+@model IEnumerable<KFCWebApp.Models.Category>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Quản lý danh mục";
+}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-3">
+            <h5 class="mb-0">Danh sách danh mục</h5>
+            <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus me-1"></i>Thêm mới</a>
+        </div>
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Tên danh mục</th>
+                    <th>Mô tả</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int stt = 1; }
+                @foreach (var cat in Model)
+                {
+                    <tr>
+                        <td>@(stt++)</td>
+                        <td>@cat.Name</td>
+                        <td>@cat.Description</td>
+                        <td>
+                            @if (cat.IsActive)
+                            {
+                                <span class="badge bg-success">Kích hoạt</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Ẩn</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-edit"></i></a>
+                            <a asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div> 

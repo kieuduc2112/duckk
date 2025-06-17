@@ -1,0 +1,33 @@
+@model KFCWebApp.Models.Product
+@{
+    ViewData["Title"] = "Thêm sản phẩm";
+}
+<h2>Thêm sản phẩm mới</h2>
+<form asp-action="Create" method="post">
+    <div>
+        <label>Tên sản phẩm</label>
+        <input asp-for="Name" required />
+    </div>
+    <div>
+        <label>Mô tả</label>
+        <textarea asp-for="Description" required></textarea>
+    </div>
+    <div>
+        <label>Giá</label>
+        <input asp-for="Price" type="number" step="1000" required />
+    </div>
+    <div>
+        <label>Ảnh (URL)</label>
+        <input asp-for="ImageUrl" />
+    </div>
+    <div>
+        <label>Danh mục</label>
+        <input asp-for="Category" required />
+    </div>
+    <div>
+        <label>Trạng thái</label>
+        <input asp-for="IsAvailable" type="checkbox" /> Còn bán
+    </div>
+    <button type="submit">Thêm</button>
+</form>
+<a href="/AdminProduct">Quay lại</a> 
