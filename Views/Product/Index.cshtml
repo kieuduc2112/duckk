@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Thực đơn";
+    var categories = ViewBag.Categories as List<KFCWebApp.Models.Category>;
 }
 
 <div class="container py-4">
@@ -11,11 +12,14 @@
             <form asp-action="Index" method="get" class="d-flex gap-2">
                 <div class="input-group">
                     <input type="text" name="searchString" value="@ViewBag.CurrentSearch" class="form-control" placeholder="Tìm kiếm sản phẩm...">
-                    <select name="category" class="form-select" style="max-width: 200px;">
+                    <select name="categoryId" class="form-select" style="max-width: 200px;">
                         <option value="">Tất cả danh mục</option>
-                        @foreach (var category in ViewBag.Categories)
+                        @if (categories != null)
                         {
-                            <option value="@category" selected="@(category == ViewBag.CurrentCategory)">@category</option>
+                            foreach (var category in categories)
+                            {
+                                <option value="@category.Id" selected="@(category.Id == (ViewBag.CurrentCategoryId ?? 0))">@category.Name</option>
+                            }
                         }
                     </select>
                     <button type="submit" class="btn btn-primary">
@@ -24,11 +28,14 @@
                 </div>
             </form>
         </div>
-        <div class="col-md-4 text-end">
-            <a asp-action="Create" class="btn btn-success">
-                <i class="fas fa-plus"></i> Thêm sản phẩm mới
-            </a>
-        </div>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <div class="col-md-4 text-end">
+                <a asp-action="Create" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Thêm sản phẩm mới
+                </a>
+            </div>
+        }
     </div>
 
     <!-- Danh sách sản phẩm -->
@@ -37,7 +44,7 @@
         {
             <div class="col">
                 <div class="card h-100 shadow-sm">
-                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://via.placeholder.com/300x200" : item.ImageUrl)" 
+                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" : item.ImageUrl)" 
                          class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title">@item.Name</h5>
@@ -50,12 +57,15 @@
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-info-circle"></i> Chi tiết
                                 </a>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-edit"></i> Sửa
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </a>
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </a>
+                                }
                             </div>
                             <button class="btn btn-primary btn-sm add-to-cart" data-product-id="@item.Id">
                                 <i class="fas fa-cart-plus"></i> Thêm vào giỏ

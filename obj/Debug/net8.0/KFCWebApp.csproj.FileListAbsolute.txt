@@ -155,3 +155,4 @@ D:\web ban ga\KFCWebApp\bin\Debug\net8.0\itext.commons.dll
 D:\web ban ga\KFCWebApp\bin\Debug\net8.0\itext.html2pdf.dll
 D:\web ban ga\KFCWebApp\bin\Debug\net8.0\Microsoft.DotNet.PlatformAbstractions.dll
 D:\web ban ga\KFCWebApp\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\web ban ga\KFCWebApp\obj\Debug\net8.0\KFCWebApp.sourcelink.json

@@ -34,8 +34,10 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="ImageUrl" class="form-label">Ảnh (URL)</label>
-                        <input asp-for="ImageUrl" class="form-control" />
+                        <label asp-for="ImageUrl" class="form-label">Đường dẫn ảnh (URL)</label>
+                        <input asp-for="ImageUrl" class="form-control" placeholder="/images/products/ga-ran.svg hoặc https://..." />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <div class="form-text">Dán link ảnh SVG, PNG, JPG... hoặc link ngoài đều được.</div>
                     </div>
                     <div class="form-check mb-3">
                         <input asp-for="IsAvailable" class="form-check-input" type="checkbox" />

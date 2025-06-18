@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using KFCWebApp.Data;
 using KFCWebApp.Models;
 
@@ -59,6 +60,7 @@ namespace KFCWebApp.Controllers
         }
 
         // GET: Product/Create
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Categories = await _context.Categories.Where(c => c.IsActive).ToListAsync();
@@ -68,6 +70,7 @@ namespace KFCWebApp.Controllers
         // POST: Product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Name,Description,Price,CategoryId,ImageUrl")] Product product)
         {
             if (ModelState.IsValid)
@@ -82,6 +85,7 @@ namespace KFCWebApp.Controllers
         }
 
         // GET: Product/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -101,6 +105,7 @@ namespace KFCWebApp.Controllers
         // POST: Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,CategoryId,ImageUrl")] Product product)
         {
             if (id != product.Id)
@@ -134,6 +139,7 @@ namespace KFCWebApp.Controllers
         }
 
         // GET: Product/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -154,6 +160,7 @@ namespace KFCWebApp.Controllers
         // POST: Product/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);

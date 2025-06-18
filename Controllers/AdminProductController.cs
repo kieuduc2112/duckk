@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using KFCWebApp.Data;
 using KFCWebApp.Models;
 using System.Linq;
@@ -18,13 +19,14 @@ namespace KFCWebApp.Controllers
 
         public IActionResult Index()
         {
-            var products = _context.Products.ToList();
+            var products = _context.Products.Include(p => p.Category).ToList();
             return View(products);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Categories = await _context.Categories.Where(c => c.IsActive).ToListAsync();
             return View();
         }
 
@@ -33,18 +35,32 @@ namespace KFCWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                try
+                {
+                    product.CreatedAt = DateTime.Now;
+                    _context.Products.Add(product);
+                    await _context.SaveChangesAsync();
+                    TempData["Message"] = "Thêm sản phẩm thành công!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Có lỗi xảy ra khi thêm sản phẩm: " + ex.Message);
+                }
             }
+            
+            // Nếu có lỗi, load lại categories và hiển thị lỗi
+            ViewBag.Categories = await _context.Categories.Where(c => c.IsActive).ToListAsync();
             return View(product);
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var product = _context.Products.Find(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
+            
+            ViewBag.Categories = await _context.Categories.Where(c => c.IsActive).ToListAsync();
             return View(product);
         }
 
@@ -53,17 +69,29 @@ namespace KFCWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Products.Update(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                try
+                {
+                    product.UpdatedAt = DateTime.Now;
+                    _context.Products.Update(product);
+                    await _context.SaveChangesAsync();
+                    TempData["Message"] = "Cập nhật sản phẩm thành công!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Có lỗi xảy ra khi cập nhật sản phẩm: " + ex.Message);
+                }
             }
+            
+            // Nếu có lỗi, load lại categories và hiển thị lỗi
+            ViewBag.Categories = await _context.Categories.Where(c => c.IsActive).ToListAsync();
             return View(product);
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var product = _context.Products.Find(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
             return View(product);
         }
@@ -71,11 +99,19 @@ namespace KFCWebApp.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = _context.Products.Find(id);
+            var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Products.Remove(product);
+                    await _context.SaveChangesAsync();
+                    TempData["Message"] = "Xóa sản phẩm thành công!";
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Có lỗi xảy ra khi xóa sản phẩm: " + ex.Message;
+                }
             }
             return RedirectToAction("Index");
         }

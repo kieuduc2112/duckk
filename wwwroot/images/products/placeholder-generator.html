@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KFC Product Image Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .product-image { 
+            width: 300px; 
+            height: 200px; 
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .container { display: flex; flex-wrap: wrap; }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>KFC Product Image Generator</h1>
+    <p>Click vào ảnh để tải xuống</p>
+    
+    <div class="container">
+        <div class="product-image" onclick="downloadImage(this, 'ga-ran')">
+            Gà Rán KFC<br>Chicken Fried
+        </div>
+        
+        <div class="product-image" onclick="downloadImage(this, 'burger')">
+            Burger KFC<br>Delicious
+        </div>
+        
+        <div class="product-image" onclick="downloadImage(this, 'combo')">
+            Combo KFC<br>Value Meal
+        </div>
+        
+        <div class="product-image" onclick="downloadImage(this, 'nuoc-ngot')">
+            Nước Ngọt<br>Soft Drinks
+        </div>
+        
+        <div class="product-image" onclick="downloadImage(this, 'kem')">
+            Kem KFC<br>Ice Cream
+        </div>
+        
+        <div class="product-image" onclick="downloadImage(this, 'khoai-tay')">
+            Khoai Tây Chiên<br>French Fries
+        </div>
+        
+        <div class="product-image" onclick="downloadImage(this, 'ga-nuong')">
+            Gà Nướng<br>Grilled Chicken
+        </div>
+        
+        <div class="product-image" onclick="downloadImage(this, 'pizza')">
+            Pizza KFC<br>Italian Style
+        </div>
+    </div>
+
+    <script>
+        function downloadImage(element, filename) {
+            // Tạo canvas để chuyển đổi thành ảnh
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Lấy style của element
+            const rect = element.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            
+            // Vẽ background gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#ff6b35');
+            gradient.addColorStop(1, '#f7931e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Vẽ text
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 18px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            const text = element.innerHTML.replace('<br>', '\n');
+            const lines = text.split('\n');
+            const lineHeight = 25;
+            const startY = canvas.height / 2 - (lines.length - 1) * lineHeight / 2;
+            
+            lines.forEach((line, index) => {
+                ctx.fillText(line, canvas.width / 2, startY + index * lineHeight);
+            });
+            
+            // Tạo link download
+            const link = document.createElement('a');
+            link.download = filename + '.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html> 

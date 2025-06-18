@@ -43,60 +43,120 @@ namespace KFCWebApp.Data
                 new Product
                 {
                     Name = "Gà Rán 2 Miếng",
-                    Description = "2 miếng gà rán giòn rụm, thơm ngon",
+                    Description = "2 miếng gà rán giòn rụm, thơm ngon với lớp vỏ giòn và thịt mềm bên trong",
                     Price = 69000,
                     CategoryId = categoryList[0].Id,
-                    ImageUrl = "/images/products/ga-ran-2-mieng.jpg",
+                    ImageUrl = "/images/products/ga-ran.svg",
                     IsAvailable = true,
                     CreatedAt = DateTime.Now
                 },
                 new Product
                 {
                     Name = "Gà Rán 3 Miếng",
-                    Description = "3 miếng gà rán giòn rụm, thơm ngon",
+                    Description = "3 miếng gà rán giòn rụm, thơm ngon với sốt đặc biệt",
                     Price = 99000,
                     CategoryId = categoryList[0].Id,
-                    ImageUrl = "/images/products/ga-ran-3-mieng.jpg",
+                    ImageUrl = "/images/products/ga-ran.svg",
+                    IsAvailable = true,
+                    CreatedAt = DateTime.Now
+                },
+                new Product
+                {
+                    Name = "Gà Nướng BBQ",
+                    Description = "Gà nướng với sốt BBQ đặc biệt, thịt mềm và thơm",
+                    Price = 89000,
+                    CategoryId = categoryList[0].Id,
+                    ImageUrl = "/images/products/ga-nuong.svg",
                     IsAvailable = true,
                     CreatedAt = DateTime.Now
                 },
                 new Product
                 {
                     Name = "Burger Gà",
-                    Description = "Burger gà với sốt đặc biệt",
+                    Description = "Burger gà với sốt đặc biệt, rau tươi và phô mai",
                     Price = 49000,
                     CategoryId = categoryList[1].Id,
-                    ImageUrl = "/images/products/burger-ga.jpg",
+                    ImageUrl = "/images/products/burger.svg",
+                    IsAvailable = true,
+                    CreatedAt = DateTime.Now
+                },
+                new Product
+                {
+                    Name = "Burger Bò",
+                    Description = "Burger bò với thịt bò tươi ngon, rau và sốt đặc biệt",
+                    Price = 59000,
+                    CategoryId = categoryList[1].Id,
+                    ImageUrl = "/images/products/burger.svg",
+                    IsAvailable = true,
+                    CreatedAt = DateTime.Now
+                },
+                new Product
+                {
+                    Name = "Combo Gà Rán",
+                    Description = "Combo gà rán với khoai tây chiên và nước ngọt",
+                    Price = 129000,
+                    CategoryId = categoryList[1].Id,
+                    ImageUrl = "/images/products/combo.svg",
                     IsAvailable = true,
                     CreatedAt = DateTime.Now
                 },
                 new Product
                 {
                     Name = "Khoai Tây Chiên",
-                    Description = "Khoai tây chiên giòn rụm",
+                    Description = "Khoai tây chiên giòn rụm với muối và gia vị đặc biệt",
                     Price = 29000,
                     CategoryId = categoryList[2].Id,
-                    ImageUrl = "/images/products/khoai-tay-chien.jpg",
+                    ImageUrl = "/images/products/khoai-tay.svg",
+                    IsAvailable = true,
+                    CreatedAt = DateTime.Now
+                },
+                new Product
+                {
+                    Name = "Khoai Tây Nghiền",
+                    Description = "Khoai tây nghiền mềm mịn với bơ và sữa",
+                    Price = 25000,
+                    CategoryId = categoryList[2].Id,
+                    ImageUrl = "/images/products/khoai-tay.svg",
                     IsAvailable = true,
                     CreatedAt = DateTime.Now
                 },
                 new Product
                 {
                     Name = "Coca Cola",
-                    Description = "Nước ngọt Coca Cola",
+                    Description = "Nước ngọt Coca Cola mát lạnh",
                     Price = 19000,
                     CategoryId = categoryList[3].Id,
-                    ImageUrl = "/images/products/coca-cola.jpg",
+                    ImageUrl = "/images/products/nuoc-ngot.svg",
+                    IsAvailable = true,
+                    CreatedAt = DateTime.Now
+                },
+                new Product
+                {
+                    Name = "Pepsi",
+                    Description = "Nước ngọt Pepsi mát lạnh",
+                    Price = 19000,
+                    CategoryId = categoryList[3].Id,
+                    ImageUrl = "/images/products/nuoc-ngot.svg",
                     IsAvailable = true,
                     CreatedAt = DateTime.Now
                 },
                 new Product
                 {
                     Name = "Kem Vanilla",
-                    Description = "Kem vani mềm mịn",
+                    Description = "Kem vani mềm mịn với hương vị tự nhiên",
                     Price = 15000,
                     CategoryId = categoryList[4].Id,
-                    ImageUrl = "/images/products/kem-vanilla.jpg",
+                    ImageUrl = "/images/products/kem.svg",
+                    IsAvailable = true,
+                    CreatedAt = DateTime.Now
+                },
+                new Product
+                {
+                    Name = "Kem Chocolate",
+                    Description = "Kem chocolate đậm đà với hương vị cacao",
+                    Price = 17000,
+                    CategoryId = categoryList[4].Id,
+                    ImageUrl = "/images/products/kem.svg",
                     IsAvailable = true,
                     CreatedAt = DateTime.Now
                 }

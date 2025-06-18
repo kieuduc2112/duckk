@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KFCWebApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7ffc28b1c735200461117acabdf20b790a44f069")]
 [assembly: System.Reflection.AssemblyProductAttribute("KFCWebApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KFCWebApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
