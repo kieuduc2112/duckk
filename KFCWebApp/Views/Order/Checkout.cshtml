@@ -1,0 +1,208 @@
+@model KFCWebApp.Models.OrderCheckoutViewModel
+
+@{
+    ViewData["Title"] = "Thanh toán";
+    var cart = ViewBag.Cart as List<KFCWebApp.Models.CartItem> ?? new List<KFCWebApp.Models.CartItem>();
+    var subtotal = cart.Sum(i => i.Total);
+    var shippingFee = 0m;
+    var total = subtotal + shippingFee;
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Thanh toán đơn hàng</h2>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-warning">@TempData["Message"]</div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Thông tin giao hàng</h5>
+                    <form asp-action="Checkout" method="post" novalidate>
+                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Order.CustomerName" class="form-label">Họ và tên *</label>
+                            <input asp-for="Order.CustomerName" class="form-control" placeholder="Nhập họ và tên của bạn" />
+                            <span asp-validation-for="Order.CustomerName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Order.PhoneNumber" class="form-label">Số điện thoại *</label>
+                            <input asp-for="Order.PhoneNumber" class="form-control" placeholder="Nhập số điện thoại" />
+                            <span asp-validation-for="Order.PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Order.Email" class="form-label">Email *</label>
+                            <input asp-for="Order.Email" class="form-control" placeholder="Nhập email của bạn" />
+                            <span asp-validation-for="Order.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Order.Address" class="form-label">Địa chỉ giao hàng *</label>
+                            <textarea asp-for="Order.Address" class="form-control" rows="3" placeholder="Nhập địa chỉ giao hàng chi tiết"></textarea>
+                            <span asp-validation-for="Order.Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Order.Note" class="form-label">Ghi chú</label>
+                            <textarea asp-for="Order.Note" class="form-control" rows="3" placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
+                            <span asp-validation-for="Order.Note" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="VoucherCode" class="form-label">Mã giảm giá (nếu có)</label>
+                            <div class="input-group">
+                                <input asp-for="VoucherCode" class="form-control" placeholder="Nhập mã giảm giá" autocomplete="off" />
+                                <button type="button" class="btn btn-outline-primary" id="btn-check-voucher">Áp dụng</button>
+                            </div>
+                            <span asp-validation-for="VoucherCode" class="text-danger"></span>
+                            <div id="voucher-message" class="form-text"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phương thức thanh toán</label>
+                            <div class="alert alert-success mb-0">
+                                <i class="fas fa-credit-card me-2"></i>Chỉ hỗ trợ <b>thanh toán online</b>.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-order">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Xác nhận đặt hàng - @total.ToString("N0") VNĐ
+                            </button>
+                            <a href="@Url.Action("Index", "Cart")" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại giỏ hàng
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="fas fa-shopping-cart me-2"></i>Đơn hàng của bạn
+                    </h5>
+                    
+                    @if (cart.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th class="text-end">SL</th>
+                                        <th class="text-end">Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in cart)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                                                    <img src="@item.ImageUrl" alt="@item.ItemName" class="me-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                <div>
+                                    <div class="fw-medium">@item.ItemName</div>
+                                                        <small class="text-muted">@item.Price.ToString("N0") VNĐ</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-end">@item.Quantity</td>
+                                            <td class="text-end fw-medium">@item.Total.ToString("N0") VNĐ</td>
+                                        </tr>
+                                    }
+                                    @if (ViewBag.VoucherDiscount != null && (decimal)ViewBag.VoucherDiscount > 0)
+                                    {
+                                        <tr>
+                                            <td colspan="3" class="text-success">Voucher giảm giá (@ViewBag.VoucherCode)</td>
+                                            <td class="text-end text-success">-@String.Format("{0:N0}", ViewBag.VoucherDiscount) VNĐ</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tạm tính:</span>
+                            <span id="subtotal-amount">@subtotal.ToString("N0") VNĐ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2" id="voucher-discount" style="display:@((ViewBag.VoucherDiscount != null && (decimal)ViewBag.VoucherDiscount > 0) ? "flex" : "none")">
+                            <span>Voucher giảm giá:</span>
+                            <span id="voucher-discount-amount">-@((decimal)ViewBag.VoucherDiscount).ToString("N0") VNĐ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Phí vận chuyển:</span>
+                            <span class="text-success">Miễn phí</span>
+                        </div>
+                        @if ((decimal)ViewBag.Discount > 0)
+                        {
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Giảm giá:</span>
+                                <span class="text-danger">-@((decimal)ViewBag.Discount).ToString("N0") VNĐ</span>
+                            </div>
+                        }
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-bold fs-5">Tổng cộng:</span>
+                            <span class="fw-bold fs-5 text-primary" id="total-amount">@((subtotal - (decimal)ViewBag.Discount).ToString("N0")) VNĐ</span>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <small>Đơn hàng sẽ được xử lý trong vòng 30 phút</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Giỏ hàng trống</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#btn-check-voucher').click(function() {
+                var code = $('#VoucherCode').val();
+                if (!code) {
+                    $('#voucher-message').text('Vui lòng nhập mã giảm giá!').removeClass('text-success').addClass('text-danger');
+                    return;
+                }
+                $.get('/Order/CheckVoucher', { code: code }, function(res) {
+                    var subtotal = parseInt($('#subtotal-amount').text().replace(/[^0-9]/g, ''));
+                    if (res.success && res.discount > 0) {
+                        $('#voucher-message').text(res.message).removeClass('text-danger').addClass('text-success');
+                        $('#voucher-discount').show();
+                        $('#voucher-discount-amount').text('-' + res.discount.toLocaleString() + ' VNĐ');
+                        var total = subtotal - res.discount;
+                        $('#total-amount').text(total.toLocaleString() + ' VNĐ');
+                        $('#btn-submit-order').html('<i class="fas fa-check-circle me-2"></i>Xác nhận đặt hàng - ' + total.toLocaleString() + ' VNĐ');
+                    } else {
+                        $('#voucher-message').text(res.message).removeClass('text-success').addClass('text-danger');
+                        $('#voucher-discount').hide();
+                        $('#voucher-discount-amount').text('');
+                        $('#total-amount').text(subtotal.toLocaleString() + ' VNĐ');
+                        $('#btn-submit-order').html('<i class="fas fa-check-circle me-2"></i>Xác nhận đặt hàng - ' + subtotal.toLocaleString() + ' VNĐ');
+                    }
+                });
+            });
+        });
+    </script>
+} 

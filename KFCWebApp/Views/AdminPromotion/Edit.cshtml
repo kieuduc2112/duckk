@@ -1,0 +1,155 @@
+@model KFCWebApp.Models.Promotion
+@using KFCWebApp.Models
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var categories = ViewBag.Categories as List<Category>;
+    var products = ViewBag.Products as List<Product>;
+}
+<form asp-action="Edit" method="post" id="promoForm">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="StartDate" class="form-label"></label>
+        <input asp-for="StartDate" type="date" class="form-control" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="EndDate" class="form-label"></label>
+        <input asp-for="EndDate" type="date" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="IsActive" class="form-label"></label>
+        <input asp-for="IsActive" type="checkbox" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="ConditionType" class="form-label">Loại điều kiện</label>
+        <select asp-for="ConditionType" class="form-select" id="conditionType">
+            <option value="BuyXGetY">Mua X tặng Y</option>
+            <option value="AmountDiscount">Giảm tiền trực tiếp</option>
+        </select>
+        <span asp-validation-for="ConditionType" class="text-danger"></span>
+    </div>
+    <div id="buyxgety-fields">
+        <div class="mb-3">
+            <label>Chọn danh mục cần mua</label>
+            <select class="form-select" id="buyCategory">
+                <option value="">-- Chọn danh mục --</option>
+                @foreach (var cat in categories ?? new List<Category>())
+                {
+                    <option value="@cat.Id">@cat.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Số lượng cần mua</label>
+            <input type="number" class="form-control" id="buyQuantity" min="1" value="2" />
+        </div>
+        <div class="mb-3">
+            <label>Chọn sản phẩm tặng</label>
+            <select class="form-select" id="giftProduct">
+                <option value="">-- Chọn sản phẩm --</option>
+                @foreach (var p in products ?? new List<Product>())
+                {
+                    <option value="@p.Id">@p.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Số lượng tặng</label>
+            <input type="number" class="form-control" id="giftQuantity" min="1" value="1" />
+        </div>
+    </div>
+    <div id="amountdiscount-fields" style="display:none">
+        <div class="mb-3">
+            <label>Số tiền tối thiểu đơn hàng</label>
+            <input type="number" class="form-control" id="minAmount" min="0" value="200000" />
+        </div>
+        <div class="mb-3">
+            <label>Số tiền giảm</label>
+            <input type="number" class="form-control" id="discountAmount" min="1000" value="30000" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ConditionJson" class="form-label">Điều kiện (JSON)</label>
+        <textarea asp-for="ConditionJson" class="form-control" rows="3" id="conditionJson"></textarea>
+        <span asp-validation-for="ConditionJson" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="RewardJson" class="form-label">Phần thưởng (JSON)</label>
+        <textarea asp-for="RewardJson" class="form-control" rows="3" id="rewardJson"></textarea>
+        <span asp-validation-for="RewardJson" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+<script>
+    function updateJsonFields() {
+        var type = document.getElementById('conditionType').value;
+        if (type === 'BuyXGetY') {
+            document.getElementById('buyxgety-fields').style.display = '';
+            document.getElementById('amountdiscount-fields').style.display = 'none';
+            var catId = document.getElementById('buyCategory').value;
+            var buyQty = document.getElementById('buyQuantity').value;
+            var giftId = document.getElementById('giftProduct').value;
+            var giftQty = document.getElementById('giftQuantity').value;
+            var cond = { type: 'BuyXGetY', buy: [{ productCategoryId: parseInt(catId), quantity: parseInt(buyQty) }] };
+            var reward = { type: 'Gift', productId: parseInt(giftId), quantity: parseInt(giftQty) };
+            document.getElementById('conditionJson').value = JSON.stringify(cond);
+            document.getElementById('rewardJson').value = JSON.stringify(reward);
+        } else if (type === 'AmountDiscount') {
+            document.getElementById('buyxgety-fields').style.display = 'none';
+            document.getElementById('amountdiscount-fields').style.display = '';
+            var minAmount = document.getElementById('minAmount').value;
+            var discountAmount = document.getElementById('discountAmount').value;
+            var cond = { type: 'AmountDiscount', minAmount: parseInt(minAmount) };
+            var reward = { type: 'AmountDiscount', amount: parseInt(discountAmount) };
+            document.getElementById('conditionJson').value = JSON.stringify(cond);
+            document.getElementById('rewardJson').value = JSON.stringify(reward);
+        }
+    }
+    document.getElementById('conditionType').addEventListener('change', updateJsonFields);
+    document.getElementById('buyCategory').addEventListener('change', updateJsonFields);
+    document.getElementById('buyQuantity').addEventListener('input', updateJsonFields);
+    document.getElementById('giftProduct').addEventListener('change', updateJsonFields);
+    document.getElementById('giftQuantity').addEventListener('input', updateJsonFields);
+    document.getElementById('minAmount').addEventListener('input', updateJsonFields);
+    document.getElementById('discountAmount').addEventListener('input', updateJsonFields);
+    // Khởi tạo khi load trang
+    function fillEditFields() {
+        var cond = {};
+        var reward = {};
+        try {
+            cond = JSON.parse(document.getElementById('conditionJson').value);
+            reward = JSON.parse(document.getElementById('rewardJson').value);
+        } catch {}
+        if (cond.type === 'BuyXGetY') {
+            document.getElementById('conditionType').value = 'BuyXGetY';
+            document.getElementById('buyxgety-fields').style.display = '';
+            document.getElementById('amountdiscount-fields').style.display = 'none';
+            if (cond.buy && cond.buy.length > 0) {
+                document.getElementById('buyCategory').value = cond.buy[0].productCategoryId;
+                document.getElementById('buyQuantity').value = cond.buy[0].quantity;
+            }
+            if (reward.productId) document.getElementById('giftProduct').value = reward.productId;
+            if (reward.quantity) document.getElementById('giftQuantity').value = reward.quantity;
+        } else if (cond.type === 'AmountDiscount') {
+            document.getElementById('conditionType').value = 'AmountDiscount';
+            document.getElementById('buyxgety-fields').style.display = 'none';
+            document.getElementById('amountdiscount-fields').style.display = '';
+            if (cond.minAmount) document.getElementById('minAmount').value = cond.minAmount;
+            if (reward.amount) document.getElementById('discountAmount').value = reward.amount;
+        }
+        updateJsonFields();
+    }
+    fillEditFields();
+</script> 

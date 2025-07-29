@@ -1,0 +1,119 @@
+@model KFCWebApp.Models.Product
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Thêm sản phẩm";
+    var categories = ViewBag.Categories as List<KFCWebApp.Models.Category>;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Thêm sản phẩm mới</h5>
+            </div>
+            <div class="card-body">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
+
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Tên sản phẩm *</label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label">Giá (VNĐ) *</label>
+                        <input asp-for="Price" type="number" step="1000" min="0" class="form-control" required />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label">Danh mục *</label>
+                        @if (categories != null && categories.Any())
+                        {
+                            <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(categories, "Id", "Name"))" required>
+                                <option value="">-- Chọn danh mục --</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Chưa có danh mục nào. Vui lòng <a asp-controller="AdminCategory" asp-action="Create">tạo danh mục</a> trước.
+                            </div>
+                        }
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label">Đường dẫn ảnh (URL)</label>
+                        <input asp-for="ImageUrl" class="form-control" placeholder="/images/products/ga-ran.svg hoặc https://..." />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <div class="form-text">Dán link ảnh SVG, PNG, JPG... hoặc link ngoài đều được.</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="hasOptionType" />
+                            <label class="form-check-label" for="hasOptionType">Có thuộc tính (size hoặc số miếng gà)</label>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="optionType-group" style="display:none">
+                        <label asp-for="OptionType" class="form-label">Kiểu thuộc tính</label><br />
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" asp-for="OptionType" value="1" id="optionTypeSize" />
+                            <label class="form-check-label" for="optionTypeSize">Chọn size</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" asp-for="OptionType" value="2" id="optionTypePiece" />
+                            <label class="form-check-label" for="optionTypePiece">Chọn số miếng gà</label>
+                        </div>
+                        <span asp-validation-for="OptionType" class="text-danger"></span>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input asp-for="IsAvailable" class="form-check-input" type="checkbox" checked />
+                        <label asp-for="IsAvailable" class="form-check-label">Còn bán</label>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Quay lại</a>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-plus me-1"></i>Thêm sản phẩm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var optionTypeGroup = document.getElementById('optionType-group');
+            var hasOptionType = document.getElementById('hasOptionType');
+            var optionTypeRadios = document.querySelectorAll('input[name="OptionType"]');
+            // Ẩn/hiện group chọn thuộc tính
+            hasOptionType.addEventListener('change', function() {
+                if (this.checked) {
+                    optionTypeGroup.style.display = '';
+                } else {
+                    optionTypeGroup.style.display = 'none';
+                    optionTypeRadios.forEach(r => r.checked = false);
+                }
+            });
+            // Nếu đã có giá trị OptionType (khi submit lỗi), tự động bật checkbox
+            let checked = false;
+            optionTypeRadios.forEach(r => { if(r.checked) checked = true; });
+            if(checked) hasOptionType.checked = true;
+            optionTypeGroup.style.display = checked ? '' : 'none';
+        });
+    </script>
+} 

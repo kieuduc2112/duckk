@@ -1,0 +1,39 @@
+@model IEnumerable<KFCWebApp.Models.Promotion>
+@{
+    ViewData["Title"] = "Tin khuyến mãi";
+}
+<div class="container py-4">
+    <h2 class="mb-4">Tin khuyến mãi</h2>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Hiện chưa có chương trình khuyến mãi nào đang diễn ra.</div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var promo in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-primary">
+                        <div class="card-body">
+                            <h5 class="card-title text-danger mb-2">
+                                <i class="fas fa-bullhorn me-2"></i>@promo.Name
+                            </h5>
+                            <div class="mb-2 text-muted small">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                @promo.StartDate.ToString("dd/MM/yyyy") - @promo.EndDate.ToString("dd/MM/yyyy")
+                            </div>
+                            <div class="mb-2">
+                                <span class="badge bg-success">@promo.ConditionType</span>
+                                <span class="badge @(promo.IsActive ? "bg-primary" : "bg-secondary")">
+                                    @(promo.IsActive ? "Đang hoạt động" : "Ngừng")
+                                </span>
+                            </div>
+                            <p class="card-text">@promo.Description</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div> 

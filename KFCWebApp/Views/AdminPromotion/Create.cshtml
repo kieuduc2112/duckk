@@ -1,0 +1,245 @@
+@model KFCWebApp.Models.Promotion
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Thêm khuyến mãi mới";
+    var products = ViewBag.Products as List<KFCWebApp.Models.Product> ?? new List<KFCWebApp.Models.Product>();
+    var categories = ViewBag.Categories as List<KFCWebApp.Models.Category> ?? new List<KFCWebApp.Models.Category>();
+    var model = Model ?? new KFCWebApp.Models.Promotion();
+}
+<h2>Thêm khuyến mãi mới</h2>
+<form asp-action="Create" method="post" id="promoForm">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="StartDate" class="form-label"></label>
+        <input asp-for="StartDate" type="date" class="form-control" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="EndDate" class="form-label"></label>
+        <input asp-for="EndDate" type="date" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="IsActive" class="form-label"></label>
+        <input asp-for="IsActive" type="checkbox" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="ConditionType" class="form-label">Loại điều kiện</label>
+        <select asp-for="ConditionType" class="form-select" id="conditionType">
+            <option value="ProductPercentDiscount">Giảm % cho sản phẩm chỉ định</option>
+            <option value="ComboCustomReward">Khuyến mãi combo nhiều sản phẩm (tặng/quà/giảm tiền/giảm % cho nhiều sản phẩm)</option>
+            <option value="TwoProductPromotion">Khuyến mãi khi mua 2 sản phẩm cụ thể (giảm giá khi mua đúng 2 sản phẩm)</option>
+        </select>
+        <span asp-validation-for="ConditionType" class="text-danger"></span>
+    </div>
+    <div id="productpercentdiscount-fields" style="display:@((model.ConditionType == "ProductPercentDiscount") ? "block" : "none")">
+        <div class="mb-3">
+            <label>Chọn sản phẩm áp dụng</label>
+            <select class="form-select" id="selectedProducts2" multiple>
+                @if (products != null)
+                {
+                    foreach (var p in products)
+                    {
+                        <option value="@p.Id">@p.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Phần trăm giảm (%)</label>
+            <input type="number" class="form-control" id="percentDiscount2" min="1" max="100" value="10" />
+        </div>
+    </div>
+    <div id="combocustomreward-fields" style="display:@((model.ConditionType == "ComboCustomReward") ? "block" : "none")">
+        <div class="mb-3">
+            <label>Chọn sản phẩm combo</label>
+            <div id="comboProducts">
+                @if (products != null)
+                {
+                    foreach (var p in products)
+                    {
+                        <div class="row mb-1">
+                            <div class="col-6">
+                                <input type="checkbox" class="form-check-input combo-product-checkbox" value="@p.Id" id="comboProduct_@p.Id" />
+                                <label for="comboProduct_@p.Id">@p.Name</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control combo-product-qty" id="comboQty_@p.Id" min="1" value="1" style="width:80px;display:inline-block" disabled />
+                                <span class="ms-1">số lượng</span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="mb-3">
+            <label>Chọn phần thưởng</label>
+            <select class="form-select" id="rewardType">
+                <option value="Gift">Tặng sản phẩm</option>
+                <option value="AmountDiscount">Giảm tiền trực tiếp</option>
+                <option value="PercentDiscount">Giảm % tổng combo</option>
+            </select>
+        </div>
+        <div class="mb-3 reward-fields" id="reward-gift" style="display:none">
+            <label>Chọn sản phẩm tặng</label>
+            <select class="form-select" id="giftProduct">
+                @if (products != null)
+                {
+                    foreach (var p in products)
+                    {
+                        <option value="@p.Id">@p.Name</option>
+                    }
+                }
+            </select>
+            <label class="mt-2">Số lượng tặng</label>
+            <input type="number" class="form-control" id="giftQuantity" min="1" value="1" />
+        </div>
+        <div class="mb-3 reward-fields" id="reward-amount" style="display:none">
+            <label>Số tiền giảm (VNĐ)</label>
+            <input type="number" class="form-control" id="amountDiscount" min="1000" value="10000" />
+        </div>
+        <div class="mb-3 reward-fields" id="reward-percent" style="display:none">
+            <label>Phần trăm giảm (%)</label>
+            <input type="number" class="form-control" id="percentDiscountCombo" min="1" max="100" value="10" />
+        </div>
+    </div>
+    @if (model != null && model.ConditionType == "TwoProductPromotion")
+    {
+    <div id="twoproductpromotion-fields">
+        <div class="mb-3">
+            <label>Chọn sản phẩm thứ nhất</label>
+            <select class="form-select" id="product1" name="Product1">
+                <option value="">-- Chọn sản phẩm --</option>
+                @if (products != null)
+                {
+                    foreach (var p in products)
+                    {
+                        <option value="@p.Id">@p.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Chọn sản phẩm thứ hai</label>
+            <select class="form-select" id="product2" name="Product2">
+                <option value="">-- Chọn sản phẩm --</option>
+                @if (products != null)
+                {
+                    foreach (var p in products)
+                    {
+                        <option value="@p.Id">@p.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="alert alert-warning" id="product-warning" style="display:none">Không được chọn trùng sản phẩm!</div>
+        <div class="mb-3">
+            <label>Phần trăm giảm (%)</label>
+            <input type="number" class="form-control" id="percentDiscount" name="PercentDiscount" min="1" max="100" value="10" />
+        </div>
+    </div>
+    }
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    <input type="hidden" id="ConditionJson" name="ConditionJson" />
+    <input type="hidden" id="RewardJson" name="RewardJson" />
+</form>
+<script>
+    function updateFields() {
+        var type = $('#conditionType').val();
+        $('#productpercentdiscount-fields').toggle(type === 'ProductPercentDiscount');
+        $('#combocustomreward-fields').toggle(type === 'ComboCustomReward');
+        $('#twoproductpromotion-fields').toggle(type === 'TwoProductPromotion');
+    }
+    $('#conditionType').on('change', updateFields);
+    updateFields();
+    // Xử lý enable/disable số lượng khi chọn sản phẩm combo
+    $(document).on('change', '.combo-product-checkbox', function() {
+        var pid = $(this).val();
+        $('#comboQty_' + pid).prop('disabled', !this.checked);
+    });
+    // Ẩn/hiện các trường phần thưởng
+    $('#rewardType').on('change', function() {
+        $('.reward-fields').hide();
+        if (this.value === 'Gift') $('#reward-gift').show();
+        if (this.value === 'AmountDiscount') $('#reward-amount').show();
+        if (this.value === 'PercentDiscount') $('#reward-percent').show();
+    });
+    // Validate không chọn trùng sản phẩm
+    $('#product1, #product2').on('change', function() {
+        var p1 = $('#product1').val();
+        var p2 = $('#product2').val();
+        if (p1 && p2 && p1 === p2) {
+            $('#product-warning').show();
+        } else {
+            $('#product-warning').hide();
+        }
+    });
+    // Khi submit form, tự động sinh ConditionJson và RewardJson
+    $('#promoForm').on('submit', function() {
+        var type = $('#conditionType').val();
+        if (type === 'ProductPercentDiscount') {
+            var products = $('#selectedProducts2').val().map(x => parseInt(x));
+            var percent = parseInt($('#percentDiscount2').val());
+            $('#ConditionJson').val(JSON.stringify({ type: 'ProductPercentDiscount', products: products }));
+            $('#RewardJson').val(JSON.stringify({ type: 'PercentDiscount', percent: percent }));
+        } else if (type === 'ComboCustomReward') {
+            var products = [];
+            $('#comboProducts .combo-product-checkbox:checked').each(function() {
+                var pid = $(this).val();
+                var qty = $('#comboQty_' + pid).val();
+                products.push({ productId: parseInt(pid), quantity: parseInt(qty) });
+            });
+            $('#ConditionJson').val(JSON.stringify({ type: 'ComboCustomReward', products: products }));
+            var rewardType = $('#rewardType').val();
+            if (rewardType === 'Gift') {
+                var giftProduct = parseInt($('#giftProduct').val());
+                var giftQuantity = parseInt($('#giftQuantity').val());
+                $('#RewardJson').val(JSON.stringify({ type: 'Gift', productId: giftProduct, quantity: giftQuantity }));
+            } else if (rewardType === 'AmountDiscount') {
+                var amount = parseInt($('#amountDiscount').val());
+                $('#RewardJson').val(JSON.stringify({ type: 'AmountDiscount', amount: amount }));
+            } else if (rewardType === 'PercentDiscount') {
+                var percent = parseInt($('#percentDiscountCombo').val());
+                $('#RewardJson').val(JSON.stringify({ type: 'PercentDiscount', percent: percent }));
+            }
+        } else if (type === 'TwoProductPromotion') {
+            var p1 = $('#product1').val();
+            var p2 = $('#product2').val();
+            if (!p1 || !p2 || p1 === p2) {
+                $('#product-warning').show();
+                return false;
+            }
+            var percent = parseInt($('#percentDiscount').val());
+            $('#ConditionJson').val(JSON.stringify({ type: 'TwoProductPromotion', product1: parseInt(p1), product2: parseInt(p2) }));
+            $('#RewardJson').val(JSON.stringify({ type: 'PercentDiscount', percent: percent }));
+        }
+    });
+</script>
+@section Scripts {
+    <script>
+        $(function() {
+            $('form').on('submit', function() {
+                var type = $('#conditionType').val();
+                if(type === 'TwoProductPromotion') {
+                    var product1 = $('#product1').val();
+                    var product2 = $('#product2').val();
+                    var percent = $('#percentDiscount').val();
+                    var condition = JSON.stringify({ ProductId1: product1, ProductId2: product2 });
+                    var reward = JSON.stringify({ PercentDiscount: percent });
+                    $('#ConditionJson').val(condition);
+                    $('#RewardJson').val(reward);
+                }
+            });
+        });
+    </script>
+} 

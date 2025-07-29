@@ -1,0 +1,23 @@
+@model KFCWebApp.Models.ApplicationUser
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chi tiết người dùng";
+}
+<div class="container py-4">
+    <h2 class="mb-4">Chi tiết người dùng</h2>
+    <dl class="row">
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+        <dt class="col-sm-3">Họ tên</dt>
+        <dd class="col-sm-9">@Model.FullName</dd>
+        <dt class="col-sm-3">Địa chỉ</dt>
+        <dd class="col-sm-9">@Model.Address</dd>
+        <dt class="col-sm-3">Ngày tạo</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-3">Số điện thoại</dt>
+        <dd class="col-sm-9">@Model.PhoneNumber</dd>
+        <dt class="col-sm-3">UserName</dt>
+        <dd class="col-sm-9">@Model.UserName</dd>
+    </dl>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div> 

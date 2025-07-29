@@ -1,0 +1,98 @@
+@model KFCWebApp.Models.Combo
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name">
+            }
+            else
+            {
+                <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 400px;">
+                    <i class="fas fa-image fa-5x text-muted"></i>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <h2 class="mb-3">@Model.Name</h2>
+            <p class="text-muted mb-3">@Model.Description</p>
+            
+            <div class="mb-3">
+                <span class="badge bg-primary">@Model.ComboCategory?.Name</span>
+            </div>
+            
+            <div class="mb-4">
+                <h3 class="text-primary">@Model.Price.ToString("N0") VNĐ</h3>
+                @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price)
+                {
+                    <p class="text-muted text-decoration-line-through">@Model.OriginalPrice.Value.ToString("N0") VNĐ</p>
+                }
+            </div>
+            
+            <div class="mb-4">
+                <h5>Bao gồm:</h5>
+                <div class="row">
+                    @foreach (var item in Model.ComboItems)
+                    {
+                        <div class="col-6 mb-2">
+                            <div class="card">
+                                <div class="card-body p-2">
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(item.Product?.ImageUrl))
+                                        {
+                                            <img src="@item.Product.ImageUrl" class="me-2" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                        }
+                                        <div>
+                                            <small class="fw-medium">@item.Product?.Name</small><br>
+                                            <small class="text-muted">Số lượng: @item.Quantity</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary btn-lg btn-add-to-cart" data-combo-id="@Model.Id" data-combo-name="@Model.Name">
+                    <i class="fas fa-cart-plus me-2"></i>Thêm vào giỏ hàng
+                </button>
+                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.btn-add-to-cart').click(function() {
+                var comboId = $(this).data('combo-id');
+                var comboName = $(this).data('combo-name');
+                
+                $.post('@Url.Action("AddToCart", "Cart")', { comboId: comboId, quantity: 1 })
+                    .done(function(response) {
+                        if (response.success) {
+                            alert('Đã thêm combo "' + comboName + '" vào giỏ hàng!');
+                            // Cập nhật số lượng giỏ hàng nếu có
+                            if (response.cartCount !== undefined) {
+                                $('.cart-count').text(response.cartCount);
+                            }
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra!');
+                        }
+                    })
+                    .fail(function() {
+                        alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                    });
+            });
+        });
+    </script>
+} 

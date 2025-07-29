@@ -1,0 +1,40 @@
+@model KFCWebApp.Models.Promotion
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chi tiết khuyến mãi";
+}
+<h2>Chi tiết khuyến mãi</h2>
+<div class="mb-3">
+    <strong>Tên chương trình:</strong> @Model.Name
+</div>
+<div class="mb-3">
+    <strong>Mô tả:</strong> @Model.Description
+</div>
+<div class="mb-3">
+    <strong>Thời gian:</strong> @Model.StartDate.ToString("dd/MM/yyyy") - @Model.EndDate.ToString("dd/MM/yyyy")
+</div>
+<div class="mb-3">
+    <strong>Trạng thái:</strong> @(Model.IsActive ? "Đang hoạt động" : "Ngừng")
+</div>
+<div class="mb-3">
+    <strong>Loại điều kiện:</strong> @Model.ConditionType
+</div>
+@if (Model.ConditionType == "TwoProductPromotion")
+{
+    <div class="mb-3">
+        <strong>Sản phẩm 1:</strong> @(ViewBag.Product1Name ?? "(không xác định)")
+    </div>
+    <div class="mb-3">
+        <strong>Sản phẩm 2:</strong> @(ViewBag.Product2Name ?? "(không xác định)")
+    </div>
+}
+<div class="mb-3">
+    <strong>Điều kiện (JSON):</strong>
+    <pre>@Model.ConditionJson</pre>
+</div>
+<div class="mb-3">
+    <strong>Phần thưởng (JSON):</strong>
+    <pre>@Model.RewardJson</pre>
+</div>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a> 

@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<!-- Hero Section -->
+<div class="hero-section position-relative mb-5">
+    <div class="hero-image" style="background-image: url('/images/banner-khuyenmai.jpg');">
+        <div class="hero-overlay"></div>
+        <div class="container position-relative">
+            <div class="row min-vh-50 align-items-center">
+                <div class="col-md-8 text-white">
+                    <h1 class="display-4 fw-bold mb-4">Khám phá hương vị KFC</h1>
+                    <p class="lead mb-4">Thưởng thức những món ăn ngon nhất với công thức độc quyền từ KFC</p>
+                    <a href="@Url.Action("Index", "Product")" class="btn btn-primary btn-lg">
+                        <i class="fas fa-utensils me-2"></i>Xem thực đơn
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Categories -->
+<div class="container mb-5">
+    <h2 class="text-center mb-4">Danh mục nổi bật</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="@(ViewBag.GaRan?.ImageUrl ?? "/images/products/ga-ran.jpg")" class="card-img-top" alt="Gà rán">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Gà rán</h5>
+                    <p class="card-text text-muted">Thưởng thức hương vị gà rán độc quyền từ KFC</p>
+                    <a href="/Product/Index?categoryId=@(ViewBag.GaRan?.CategoryId ?? 1)" class="btn btn-primary">Đặt ngay</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="@(ViewBag.Burger?.ImageUrl ?? "/images/products/burger-ga.jpg")" class="card-img-top" alt="Burger">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Burger</h5>
+                    <p class="card-text text-muted">Những chiếc burger thơm ngon với nhân bò béo ngậy</p>
+                    <a href="/Product/Index?categoryId=@(ViewBag.Burger?.CategoryId ?? 2)" class="btn btn-primary">Đặt ngay</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <img src="@(ViewBag.Drink?.ImageUrl ?? "/images/products/coca-cola.jpg")" class="card-img-top" alt="Nước giải khát">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Nước giải khát</h5>
+                    <p class="card-text text-muted">Giải khát sảng khoái cùng Coca-Cola, Pepsi...</p>
+                    <a href="/Product/Index?categoryId=@(ViewBag.Drink?.CategoryId ?? 3)" class="btn btn-primary">Đặt ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Special Offers -->
+<div class="bg-light py-5 mb-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Khuyến mãi đặc biệt</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="@((ViewBag.Specials != null && ViewBag.Specials.Count > 0) ? ViewBag.Specials[0].ImageUrl : "/images/products/ga-ran.jpg")" class="img-fluid rounded-start h-100 object-fit-cover" alt="Combo gia đình">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Combo gia đình</h5>
+                                <p class="card-text text-muted">Giảm giá 20% cho combo từ 4 người trở lên</p>
+                                <p class="card-text"><small class="text-muted">Áp dụng đến 31/12/2024</small></p>
+                                <a href="/Combo/Details/1" class="btn btn-primary">Đặt ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="https://static.kfcvietnam.com.vn/images/items/lg/Burger-Zinger.jpg?v=LvbKAL" class="img-fluid rounded-start h-100 object-fit-cover" alt="Burger mới">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Burger mới</h5>
+                                <p class="card-text text-muted">Thưởng thức Burger Zinger chuẩn vị KFC</p>
+                                <a href="/Product/Index?categoryId=@(ViewBag.Burger?.CategoryId ?? 2)" class="btn btn-primary">Đặt ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Why Choose Us -->
+<div class="container mb-5">
+    <h2 class="text-center mb-4">Tại sao chọn chúng tôi?</h2>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="text-center">
+                <i class="fas fa-utensils fa-3x text-primary mb-3"></i>
+                <h5>Chất lượng</h5>
+                <p class="text-muted">Nguyên liệu tươi ngon, đảm bảo vệ sinh</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <i class="fas fa-truck fa-3x text-primary mb-3"></i>
+                <h5>Giao hàng nhanh</h5>
+                <p class="text-muted">Giao hàng trong vòng 30 phút</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <i class="fas fa-percent fa-3x text-primary mb-3"></i>
+                <h5>Giá tốt</h5>
+                <p class="text-muted">Nhiều ưu đãi và khuyến mãi hấp dẫn</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="text-center">
+                <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+                <h5>Hỗ trợ 24/7</h5>
+                <p class="text-muted">Đội ngũ hỗ trợ nhiệt tình, chu đáo</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .hero-section {
+            width: 100%;
+            overflow: hidden;
+        }
+        .hero-image {
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
+        }
+        .min-vh-50 {
+            min-height: 50vh;
+        }
+        .object-fit-cover {
+            object-fit: cover;
+        }
+        @@media (max-width: 767.98px) {
+            .hero-image {
+                height: 300px;
+            }
+            .display-4 {
+                font-size: 2rem;
+            }
+            .lead {
+                font-size: 1rem;
+            }
+        }
+    </style>
+}

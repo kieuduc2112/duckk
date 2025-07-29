@@ -1,0 +1,153 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản trị KFC Web App</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .admin-sidebar {
+            min-height: 100vh;
+            background: #212529;
+            color: #fff;
+            padding: 0;
+        }
+        .admin-sidebar .nav-link {
+            color: #fff;
+            font-weight: 500;
+            padding: 12px 20px;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            margin: 0;
+        }
+        .admin-sidebar .nav-link.active, .admin-sidebar .nav-link:hover {
+            background: #e4002b;
+            color: #fff;
+            transform: translateX(5px);
+        }
+        .admin-sidebar .nav-item {
+            margin: 0;
+        }
+        .admin-sidebar .nav-item:not(:last-child) {
+            border-bottom: 1px solid #343a40;
+        }
+        .admin-header {
+            background: #fff;
+            border-bottom: 1px solid #dee2e6;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .admin-content {
+            padding: 2rem;
+        }
+        /* media query cho responsive */
+        @@media (max-width: 767.98px) {
+            .admin-sidebar { min-height: auto; }
+            .admin-content { padding: 1rem; }
+        }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block admin-sidebar sidebar">
+                <div class="sidebar-sticky">
+                    <div class="p-3 border-bottom border-secondary">
+                        <h5 class="text-center mb-0">
+                            <a href="@Url.Action("Index", "AdminProduct")" class="text-white text-decoration-none" style="cursor: pointer;">
+                                <i class="fas fa-user-shield me-2"></i>Admin
+                            </a>
+                        </h5>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminProduct" ? "active" : "")" asp-controller="AdminProduct" asp-action="Index">
+                                <i class="fas fa-box me-2"></i>Quản lý sản phẩm
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminCombo" ? "active" : "")" asp-controller="AdminCombo" asp-action="Index">
+                                <i class="fas fa-utensils me-2"></i>Quản lý combo
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminComboCategory" ? "active" : "")" asp-controller="AdminComboCategory" asp-action="Index">
+                                <i class="fas fa-tags me-2"></i>Quản lý danh mục combo
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminOrder" ? "active" : "")" asp-controller="AdminOrder" asp-action="Index">
+                                <i class="fas fa-list me-2"></i>Quản lý đơn hàng
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminCoupon" ? "active" : "")" asp-controller="AdminCoupon" asp-action="Index">
+                                <i class="fas fa-ticket-alt me-2"></i>Quản lý mã giảm giá
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminPromotion" ? "active" : "")" asp-controller="AdminPromotion" asp-action="Index">
+                                <i class="fas fa-gift me-2"></i>Quản lý khuyến mãi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminOrder" && ViewContext.RouteData.Values["action"]?.ToString() == "RevenueReport" ? "active" : "")" asp-controller="AdminOrder" asp-action="RevenueReport">
+                                <i class="fas fa-chart-bar me-2"></i>Báo cáo doanh thu
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminCategory" ? "active" : "")" asp-controller="AdminCategory" asp-action="Index">
+                                <i class="fas fa-tags me-2"></i>Quản lý danh mục
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminUser" ? "active" : "")" asp-controller="AdminUser" asp-action="Index">
+                                <i class="fas fa-users me-2"></i>Quản lý người dùng
+                            </a>
+                        </li>
+                        <li class="nav-item border-top border-secondary">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-2"></i>Về trang chủ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Logout">
+                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <main class="col-md-10 ms-sm-auto px-md-4">
+                <div class="admin-header">
+                    <div>
+                        <h5 class="mb-0">@ViewData["Title"]</h5>
+                    </div>
+                    <div>
+                        <span class="me-3"><i class="fas fa-user-circle"></i> @User.Identity?.Name</span>
+                    </div>
+                </div>
+                <div class="admin-content">
+                    @RenderBody()
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation/jquery.validate.unobtrusive.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 

@@ -1,0 +1,119 @@
+@model KFCWebApp.Models.Combo
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Sửa combo";
+    var categories = ViewBag.ComboCategories as List<KFCWebApp.Models.ComboCategory>;
+    var products = ViewBag.Products as List<KFCWebApp.Models.Product>;
+}
+<h2>Sửa combo</h2>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ComboCategoryId" class="form-label">Danh mục combo</label>
+        <select asp-for="ComboCategoryId" class="form-select">
+            <option value="">-- Chọn danh mục --</option>
+            @if (categories != null)
+            {
+                @foreach (var cat in categories)
+                {
+                    <option value="@cat.Id" selected="@(cat.Id == Model.ComboCategoryId)">@cat.Name</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="ComboCategoryId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Chọn sản phẩm cho combo</label>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="combo-items-body">
+                @for (int i = 0; i < Model.ComboItems.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <select name="productIds" class="form-select">
+                                <option value="">-- Chọn sản phẩm --</option>
+                                @if (products != null)
+                                {
+                                    @foreach (var p in products)
+                                    {
+                                        <option value="@p.Id" selected="@(p.Id == Model.ComboItems.ElementAt(i).ProductId)">@p.Name</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="quantities" class="form-control" value="@Model.ComboItems.ElementAt(i).Quantity" min="1" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-remove-row">Xóa</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-secondary" id="btn-add-row">Thêm sản phẩm</button>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ImageUrl" class="form-label"></label>
+        <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="IsAvailable" class="form-label"></label>
+        <input asp-for="IsAvailable" type="checkbox" />
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+@section Scripts {
+    <script>
+        $(document).on('click', '#btn-add-row', function () {
+            var row = `<tr>
+                <td>
+                    <select name="productIds" class="form-select">
+                        <option value="">-- Chọn sản phẩm --</option>
+                        @if (products != null)
+                        {
+                            @foreach (var p in products)
+                            {
+                                <option value="@p.Id">@p.Name</option>
+                            }
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="quantities" class="form-control" value="1" min="1" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-remove-row">Xóa</button>
+                </td>
+            </tr>`;
+            $('#combo-items-body').append(row);
+        });
+        $(document).on('click', '.btn-remove-row', function () {
+            $(this).closest('tr').remove();
+        });
+    </script>
+} 

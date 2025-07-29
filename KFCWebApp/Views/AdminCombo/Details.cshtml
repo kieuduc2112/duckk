@@ -1,0 +1,42 @@
+@model KFCWebApp.Models.Combo
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chi tiết combo";
+}
+<h2>Chi tiết combo</h2>
+<div class="mb-3">
+    <strong>Tên combo:</strong> @Model.Name
+</div>
+<div class="mb-3">
+    <strong>Danh mục:</strong> @Model.ComboCategory?.Name
+</div>
+<div class="mb-3">
+    <strong>Giá:</strong> @Model.Price.ToString("N0") VNĐ
+</div>
+<div class="mb-3">
+    <strong>Mô tả:</strong> @Model.Description
+</div>
+<div class="mb-3">
+    <strong>Trạng thái:</strong> @(Model.IsAvailable ? "Còn bán" : "Ngừng bán")
+</div>
+<div class="mb-3">
+    <strong>Ngày tạo:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+</div>
+<div class="mb-3">
+    <strong>Hình ảnh:</strong><br />
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" style="max-width:200px;max-height:200px;" />
+    }
+</div>
+<div class="mb-3">
+    <strong>Sản phẩm trong combo:</strong>
+    <ul>
+        @foreach (var item in Model.ComboItems)
+        {
+            <li>@item.Product?.Name x @item.Quantity</li>
+        }
+    </ul>
+</div>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a> 

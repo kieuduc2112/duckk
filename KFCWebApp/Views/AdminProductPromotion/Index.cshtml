@@ -1,0 +1,36 @@
+@model IEnumerable<KFCWebApp.Models.ProductPromotion>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Khuyến mãi sản phẩm lẻ";
+}
+<h2>Khuyến mãi sản phẩm lẻ</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">Thêm khuyến mãi mới</a>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Giảm (%)</th>
+            <th>Giảm tiền (VNĐ)</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Product1?.Name</td>
+                <td>@item.Product2?.Name</td>
+                <td>@item.PercentDiscount</td>
+                <td>@item.AmountDiscount</td>
+                <td>@item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")</td>
+                <td>@(item.IsActive ? "Đang hoạt động" : "Ngừng")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 

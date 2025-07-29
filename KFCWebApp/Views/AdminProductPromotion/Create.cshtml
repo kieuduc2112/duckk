@@ -1,0 +1,56 @@
+@model KFCWebApp.Models.ProductPromotion
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Thêm khuyến mãi 2 sản phẩm riêng biệt";
+    var products = (List<KFCWebApp.Models.Product>)ViewBag.Products;
+}
+<h2>Thêm khuyến mãi 2 sản phẩm riêng biệt</h2>
+<form asp-action="Create" method="post" onsubmit="return validateProducts()">
+    <div class="form-group">
+        <label for="ProductId1">Sản phẩm 1</label>
+        <select asp-for="ProductId1" class="form-control" asp-items="ViewBag.Products" id="ProductId1"></select>
+    </div>
+    <div class="form-group">
+        <label for="ProductId2">Sản phẩm 2</label>
+        <select asp-for="ProductId2" class="form-control" asp-items="ViewBag.Products" id="ProductId2"></select>
+    </div>
+    <div class="alert alert-warning" id="product-warning" style="display:none">Không được chọn trùng sản phẩm!</div>
+    <div class="mb-3">
+        <label asp-for="PercentDiscount" class="form-label">Giảm (%)</label>
+        <input asp-for="PercentDiscount" class="form-control" />
+        <span asp-validation-for="PercentDiscount" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="AmountDiscount" class="form-label">Giảm tiền (VNĐ)</label>
+        <input asp-for="AmountDiscount" class="form-control" />
+        <span asp-validation-for="AmountDiscount" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="StartDate" class="form-label">Từ ngày</label>
+        <input asp-for="StartDate" type="date" class="form-control" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="EndDate" class="form-label">Đến ngày</label>
+        <input asp-for="EndDate" type="date" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label">Đang hoạt động</label>
+    </div>
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+<script>
+function validateProducts() {
+    var p1 = document.getElementById('ProductId1').value;
+    var p2 = document.getElementById('ProductId2').value;
+    if (p1 === p2) {
+        document.getElementById('product-warning').style.display = '';
+        return false;
+    }
+    document.getElementById('product-warning').style.display = 'none';
+    return true;
+}
+</script> 
