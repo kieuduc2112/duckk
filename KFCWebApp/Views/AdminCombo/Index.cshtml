@@ -1,0 +1,43 @@
+@model IEnumerable<KFCWebApp.Models.Combo>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Quản lý Combo";
+}
+<h2>Quản lý Combo</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">Thêm combo mới</a>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Tên combo</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Sản phẩm trong combo</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.ComboCategory?.Name</td>
+                <td>@item.Price.ToString("N0") VNĐ</td>
+                <td>
+                    @foreach (var ci in item.ComboItems)
+                    {
+                        <span class="badge bg-secondary">@ci.Product?.Name x @ci.Quantity</span> <br />
+                    }
+                </td>
+                <td>@(item.IsAvailable ? "Còn bán" : "Ngừng bán")</td>
+                <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 

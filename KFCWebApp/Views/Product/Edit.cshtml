@@ -1,0 +1,92 @@
+@model KFCWebApp.Models.Product
+@using Microsoft.AspNetCore.Mvc.Rendering;
+@{
+    ViewData["Title"] = "Sửa sản phẩm";
+    var categories = ViewBag.Categories as List<KFCWebApp.Models.Category>;
+    var selectList = categories != null ? new SelectList(categories, "Id", "Name", Model.CategoryId) : null;
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Sửa sản phẩm</h5>
+                </div>
+                <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <div>@error.ErrorMessage</div>
+                            }
+                        </div>
+                    }
+
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Tên sản phẩm *</label>
+                            <input asp-for="Name" class="form-control" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Mô tả</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Price" class="form-label">Giá (VNĐ) *</label>
+                            <input asp-for="Price" type="number" step="1000" min="0" class="form-control" required />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="CategoryId" class="form-label">Danh mục *</label>
+                            @if (categories != null && categories.Any())
+                            {
+                                <select asp-for="CategoryId" class="form-select" asp-items="@selectList" required>
+                                    <option value="">-- Chọn danh mục --</option>
+                                </select>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Chưa có danh mục nào.
+                                </div>
+                            }
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label">Đường dẫn ảnh (URL)</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="/images/products/ga-ran.svg hoặc https://..." />
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            <div class="form-text">Dán link ảnh SVG, PNG, JPG... hoặc link ngoài đều được.</div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Xem trước ảnh:</label><br />
+                                <img src="@Model.ImageUrl" alt="Ảnh sản phẩm" style="max-width:200px;max-height:200px;" />
+                            </div>
+                        }
+                        <div class="form-check mb-3">
+                            <input asp-for="IsAvailable" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsAvailable" class="form-check-label">Còn bán</label>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Quay lại</a>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Lưu thay đổi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} 

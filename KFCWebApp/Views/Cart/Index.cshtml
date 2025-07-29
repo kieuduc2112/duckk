@@ -1,0 +1,280 @@
+@model List<KFCWebApp.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Giỏ hàng của bạn</h2>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th class="text-center">Số lượng</th>
+                                        <th class="text-end">Đơn giá</th>
+                                        <th class="text-end">Thành tiền</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://via.placeholder.com/50" : item.ImageUrl)" 
+                                                         class="rounded me-3" alt="@item.ItemName" style="width: 50px; height: 50px; object-fit: cover;">
+                                                    <div>
+                                                        <h6 class="mb-0">@item.ItemName</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="input-group input-group-sm" style="max-width: 120px; margin: 0 auto;">
+                                                    <button class="btn btn-outline-secondary btn-quantity" type="button" data-action="decrease" 
+                                                            data-product-id="@(item.ItemType == "Product" ? item.ProductId : (int?)null)" 
+                                                            data-combo-id="@(item.ItemType == "Combo" ? item.ComboId : (int?)null)">-</button>
+                                                    <input type="number" class="form-control text-center quantity-input" value="@item.Quantity" min="1" 
+                                                           data-product-id="@(item.ItemType == "Product" ? item.ProductId : (int?)null)" 
+                                                           data-combo-id="@(item.ItemType == "Combo" ? item.ComboId : (int?)null)">
+                                                    <button class="btn btn-outline-secondary btn-quantity" type="button" data-action="increase" 
+                                                            data-product-id="@(item.ItemType == "Product" ? item.ProductId : (int?)null)" 
+                                                            data-combo-id="@(item.ItemType == "Combo" ? item.ComboId : (int?)null)">+</button>
+                                                </div>
+                                            </td>
+                                            <td class="text-end">@item.Price.ToString("N0") VNĐ</td>
+                                            <td class="text-end">@item.Total.ToString("N0") VNĐ</td>
+                                            <td class="text-end">
+                                                <button class="btn btn-sm btn-outline-danger btn-remove" 
+                                                        data-product-id="@(item.ItemType == "Product" ? item.ProductId : (int?)null)" 
+                                                        data-combo-id="@(item.ItemType == "Combo" ? item.ComboId : (int?)null)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Tổng đơn hàng</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tạm tính:</span>
+                            <span>@Model.Sum(i => i.Total).ToString("N0") VNĐ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Phí vận chuyển:</span>
+                            <span>Miễn phí</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <strong>Tổng cộng:</strong>
+                            <strong class="text-primary">@Model.Sum(i => i.Total).ToString("N0") VNĐ</strong>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="@Url.Action("Checkout", "Order")" class="btn btn-primary">
+                                <i class="fas fa-shopping-cart me-2"></i>Tiến hành đặt hàng
+                            </a>
+                            <a href="@Url.Action("Index", "Product")" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
+                            </a>
+                            <button class="btn btn-outline-danger btn-clear-cart">
+                                <i class="fas fa-trash me-2"></i>Xóa giỏ hàng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (ViewBag.SuggestPromos != null && ViewBag.SuggestPromos.Count > 0)
+        {
+            <div class="mt-4 mb-4 p-3 rounded bg-dark text-white">
+                <h5 class="mb-3">SĂN KHUYẾN MÃI NGAY – MUA THÊM ĐỂ ĐƯỢC GIẢM GIÁ!</h5>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                    @foreach (var s in ViewBag.SuggestPromos)
+                    {
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                <img src="@(string.IsNullOrEmpty(s.Product.ImageUrl) ? "https://via.placeholder.com/200" : s.Product.ImageUrl)" class="card-img-top" alt="@s.Product.Name" style="height: 150px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h6 class="card-title text-dark">@s.Product.Name</h6>
+                                    <div class="text-muted mb-2">Giá: <span class="fw-bold">@s.Product.Price.ToString("N0") VNĐ</span></div>
+                                    <div class="small text-success mb-2">
+                                        @if (s.PromoType == "ProductPromotion")
+                                        {
+                                            if (s.Promo.PercentDiscount != null && s.Promo.PercentDiscount > 0)
+                                            {
+                                                <span>Mua cùng <b>@s.OwnedProduct.Name</b> để được giảm <b>@s.Promo.PercentDiscount.Value.ToString("N0")%</b> cho cả 2 sản phẩm!</span>
+                                            }
+                                            else if (s.Promo.AmountDiscount != null && s.Promo.AmountDiscount > 0)
+                                            {
+                                                <span>Mua cùng <b>@s.OwnedProduct.Name</b> để được giảm <b>@s.Promo.AmountDiscount.Value.ToString("N0") VNĐ</b>!</span>
+                                            }
+                                        }
+                                        else if (s.PromoType == "PromotionJSON")
+                                        {
+                                            var reward = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(s.Promo.RewardJson);
+                                            if (reward != null && reward.ContainsKey("PercentDiscount"))
+                                            {
+                                                <span>Mua cùng <b>@s.OwnedProduct.Name</b> để được giảm <b>@reward["PercentDiscount"]%</b> cho cả 2 sản phẩm!</span>
+                                            }
+                                            else if (reward != null && reward.ContainsKey("AmountDiscount"))
+                                            {
+                                                <span>Mua cùng <b>@s.OwnedProduct.Name</b> để được giảm <b>@(int.Parse(reward["AmountDiscount"]).ToString("N0")) VNĐ</b>!</span>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white border-top-0 text-center">
+                                    <button class="btn btn-danger btn-sm add-suggest-to-cart" data-product-id="@s.Product.Id">
+                                        <i class="fas fa-plus"></i> Thêm vào giỏ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Giỏ hàng của bạn đang trống</h4>
+            <p class="text-muted">Hãy thêm một số sản phẩm vào giỏ hàng</p>
+            <a href="@Url.Action("Index", "Product")" class="btn btn-primary mt-3">
+                <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Xử lý tăng/giảm số lượng
+            $('.btn-quantity').click(function() {
+                var action = $(this).data('action');
+                var productId = $(this).data('product-id');
+                var comboId = $(this).data('combo-id');
+                var input = $(`.quantity-input[data-product-id="${productId}"][data-combo-id="${comboId}"]`);
+                var currentValue = parseInt(input.val());
+                
+                if (action === 'increase') {
+                    input.val(currentValue + 1);
+                } else if (action === 'decrease' && currentValue > 1) {
+                    input.val(currentValue - 1);
+                }
+                
+                updateQuantity(productId, comboId, input.val());
+            });
+
+            // Xử lý thay đổi số lượng trực tiếp
+            $('.quantity-input').change(function() {
+                var productId = $(this).data('product-id');
+                var comboId = $(this).data('combo-id');
+                var quantity = $(this).val();
+                updateQuantity(productId, comboId, quantity);
+            });
+
+            // Xử lý xóa sản phẩm/combo
+            $('.btn-remove').click(function() {
+                var productId = $(this).data('product-id');
+                var comboId = $(this).data('combo-id');
+                var itemType = productId ? 'sản phẩm' : 'combo';
+                if (confirm('Bạn có chắc muốn xóa ' + itemType + ' này khỏi giỏ hàng?')) {
+                    removeItem(productId, comboId);
+                }
+            });
+
+            // Xử lý xóa giỏ hàng
+            $('.btn-clear-cart').click(function() {
+                if (confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')) {
+                    clearCart();
+                }
+            });
+
+            // Xử lý thêm sản phẩm từ gợi ý khuyến mãi
+            $('.add-suggest-to-cart').click(function() {
+                var button = $(this);
+                var productId = button.data('product-id');
+                button.prop('disabled', true);
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: 1 },
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success('Đã thêm sản phẩm vào giỏ hàng!');
+                            if (response.cartCount) {
+                                $('.cart-count').text(response.cartCount);
+                            }
+                            location.reload();
+                        } else {
+                            toastr.error(response.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+                    },
+                    complete: function() {
+                        button.prop('disabled', false);
+                    }
+                });
+            });
+
+            function updateQuantity(productId, comboId, quantity) {
+                var data = { quantity: quantity };
+                if (productId) data.productId = productId;
+                if (comboId) data.comboId = comboId;
+                
+                $.post('@Url.Action("UpdateQuantity")', data)
+                    .done(function() {
+                        location.reload();
+                    })
+                    .fail(function() {
+                        alert('Có lỗi xảy ra khi cập nhật số lượng');
+                    });
+            }
+
+            function removeItem(productId, comboId) {
+                var data = {};
+                if (productId) data.productId = productId;
+                if (comboId) data.comboId = comboId;
+                
+                $.post('@Url.Action("RemoveItem")', data)
+                    .done(function() {
+                        location.reload();
+                    })
+                    .fail(function() {
+                        alert('Có lỗi xảy ra khi xóa sản phẩm');
+                    });
+            }
+
+            function clearCart() {
+                $.post('@Url.Action("Clear")')
+                    .done(function() {
+                        location.reload();
+                    })
+                    .fail(function() {
+                        alert('Có lỗi xảy ra khi xóa giỏ hàng');
+                    });
+            }
+        });
+    </script>
+} 

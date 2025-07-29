@@ -1,0 +1,26 @@
+@model KFCWebApp.Models.ProductPromotion
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chi tiết khuyến mãi sản phẩm";
+}
+<h2>Chi tiết khuyến mãi sản phẩm</h2>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Sản phẩm 1</dt>
+        <dd class="col-sm-10">@Model.Product1?.Name</dd>
+        <dt class="col-sm-2">Sản phẩm 2</dt>
+        <dd class="col-sm-10">@Model.Product2?.Name</dd>
+        <dt class="col-sm-2">Giảm (%)</dt>
+        <dd class="col-sm-10">@Model.PercentDiscount</dd>
+        <dt class="col-sm-2">Giảm tiền (VNĐ)</dt>
+        <dd class="col-sm-10">@Model.AmountDiscount</dd>
+        <dt class="col-sm-2">Từ ngày</dt>
+        <dd class="col-sm-10">@Model.StartDate</dd>
+        <dt class="col-sm-2">Đến ngày</dt>
+        <dd class="col-sm-10">@Model.EndDate</dd>
+        <dt class="col-sm-2">Trạng thái</dt>
+        <dd class="col-sm-10">@(Model.IsActive ? "Đang hoạt động" : "Ngừng")</dd>
+    </dl>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Sửa</a>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div> 

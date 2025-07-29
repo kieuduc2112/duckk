@@ -1,0 +1,176 @@
+@model KFCWebApp.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+    // Giá tăng thêm cho từng lựa chọn
+    var sizePrice = new Dictionary<int, int> { {1, 0}, {2, 10000}, {3, 20000} }; // Nhỏ: 0, Vừa: +10k, Lớn: +20k
+    var piecePrice = new Dictionary<int, int> { {3, 0}, {6, 30000}, {9, 60000} }; // 3 miếng: 0, 6: +30k, 9: +60k
+    bool isChicken = Model.Name.ToLower().Contains("gà rán") || (Model.PieceCount != null && Model.PieceCount > 0);
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Thực đơn</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Hình ảnh sản phẩm -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://via.placeholder.com/500x400" : Model.ImageUrl)" 
+                     class="card-img-top" alt="@Model.Name" style="height: 400px; object-fit: cover;">
+            </div>
+        </div>
+
+        <!-- Thông tin sản phẩm -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="card-title mb-3">@Model.Name</h2>
+                    
+                    <div class="mb-3">
+                        <span class="h3 text-primary fw-bold">@Model.Price.ToString("N0") VNĐ</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">Mô tả:</h6>
+                        <p class="card-text">@Model.Description</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">Danh mục:</h6>
+                        <span class="badge bg-secondary">@(Model.Category?.Name ?? "Không có danh mục")</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">Trạng thái:</h6>
+                        @if (Model.IsAvailable)
+                        {
+                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Còn hàng</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Hết hàng</span>
+                        }
+                    </div>
+
+                    @if (Model.IsAvailable)
+                    {
+                        <form id="addToCartForm" asp-action="AddToCart" asp-controller="Cart" method="post">
+                            <input type="hidden" name="productId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <label class="form-label">@Model.Name</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Giá:</label>
+                                <span id="productPrice">@Model.Price.ToString("N0") VNĐ</span>
+                            </div>
+                            @if (Model.OptionType == KFCWebApp.Models.ProductOptionType.Piece)
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label">Chọn số miếng gà</label>
+                                    <select class="form-select" id="pieceSelect" name="pieceCount">
+                                        <option value="3">3 miếng</option>
+                                        <option value="6">6 miếng</option>
+                                        <option value="9">9 miếng</option>
+                                    </select>
+                                </div>
+                            }
+                            else if (Model.OptionType == KFCWebApp.Models.ProductOptionType.Size)
+                            {
+                                <div class="mb-3">
+                                    <label class="form-label">Chọn size</label>
+                                    <select class="form-select" id="sizeSelect" name="size">
+                                        <option value="2">Vừa</option>
+                                        <option value="3">Lớn</option>
+                                        <option value="4">Đại</option>
+                                    </select>
+                                </div>
+                            }
+                            <div class="mb-3">
+                                <label class="form-label">Số lượng</label>
+                                <input type="number" name="quantity" value="1" min="1" class="form-control" style="width:100px;display:inline-block;" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Sản phẩm này hiện không có sẵn
+                        </div>
+                    }
+
+                    <hr class="my-4">
+
+                    <!-- Thông tin bổ sung -->
+                    <div class="row text-muted small">
+                        <div class="col-6">
+                            <i class="fas fa-calendar me-1"></i>Ngày tạo: @Model.CreatedAt.ToString("dd/MM/yyyy")
+                        </div>
+                        @if (Model.UpdatedAt.HasValue)
+                        {
+                            <div class="col-6">
+                                <i class="fas fa-edit me-1"></i>Cập nhật: @Model.UpdatedAt.Value.ToString("dd/MM/yyyy")
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút quay lại và admin actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+                </a>
+                
+                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                {
+                    <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-1"></i>Sửa
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                            <i class="fas fa-trash me-1"></i>Xóa
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const basePrice = @Model.Price;
+        const sizePrice = {1: 0, 2: 10000, 3: 20000};
+        const piecePrice = {3: 0, 6: 30000, 9: 60000};
+        function updatePrice() {
+            let price = basePrice;
+            if (document.getElementById('pieceSelect')) {
+                let piece = parseInt(document.getElementById('pieceSelect').value);
+                price += piecePrice[piece] || 0;
+            } else if (document.getElementById('sizeSelect')) {
+                let size = parseInt(document.getElementById('sizeSelect').value);
+                price += sizePrice[size] || 0;
+            }
+            document.getElementById('productPrice').innerText = price.toLocaleString() + ' VNĐ';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('pieceSelect')) {
+                document.getElementById('pieceSelect').addEventListener('change', updatePrice);
+            }
+            if (document.getElementById('sizeSelect')) {
+                document.getElementById('sizeSelect').addEventListener('change', updatePrice);
+            }
+            updatePrice();
+        });
+    </script>
+} 

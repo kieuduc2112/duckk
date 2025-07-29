@@ -1,0 +1,35 @@
+@model KFCWebApp.Models.Coupon
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chi tiết mã giảm giá";
+}
+<h2>Chi tiết mã giảm giá</h2>
+<div class="mb-3">
+    <strong>Mã:</strong> @Model.Code
+</div>
+<div class="mb-3">
+    <strong>Mô tả:</strong> @Model.Description
+</div>
+<div class="mb-3">
+    <strong>Loại:</strong> @Model.Type
+</div>
+<div class="mb-3">
+    <strong>Giá trị:</strong> @(Model.Type == KFCWebApp.Models.CouponType.Percentage ? ($"{Model.Value:N0}%") : ($"{Model.Value:N0} VNĐ"))
+</div>
+<div class="mb-3">
+    <strong>Ngày bắt đầu:</strong> @Model.StartDate.ToString("dd/MM/yyyy")
+</div>
+<div class="mb-3">
+    <strong>Ngày kết thúc:</strong> @Model.EndDate.ToString("dd/MM/yyyy")
+</div>
+<div class="mb-3">
+    <strong>Số lượng còn lại:</strong> @Model.Quantity
+</div>
+<div class="mb-3">
+    <strong>Trạng thái:</strong> @(Model.IsActive ? "Hiện" : "Ẩn")
+</div>
+<div class="mb-3">
+    <strong>Danh mục:</strong> @Model.CouponCategory?.Name
+</div>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a> 

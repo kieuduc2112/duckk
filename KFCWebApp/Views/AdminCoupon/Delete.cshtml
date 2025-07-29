@@ -1,0 +1,23 @@
+@model KFCWebApp.Models.Coupon
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Xóa mã giảm giá";
+}
+<h2>Xóa mã giảm giá</h2>
+<div class="alert alert-danger">
+    <strong>Bạn có chắc chắn muốn xóa mã giảm giá này?</strong>
+</div>
+<div class="mb-3">
+    <strong>Mã:</strong> @Model.Code
+</div>
+<div class="mb-3">
+    <strong>Mô tả:</strong> @Model.Description
+</div>
+<div class="mb-3">
+    <strong>Giá trị:</strong> @(Model.Type == KFCWebApp.Models.CouponType.Percentage ? ($"{Model.Value:N0}%") : ($"{Model.Value:N0} VNĐ"))
+</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form> 

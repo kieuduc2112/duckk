@@ -1,0 +1,123 @@
+@model IEnumerable<KFCWebApp.Models.Product>
+
+@{
+    ViewData["Title"] = "Thực đơn";
+    var categories = ViewBag.Categories as List<KFCWebApp.Models.Category>;
+}
+
+<div class="container py-4">
+    <!-- Tìm kiếm và lọc -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form asp-action="Index" method="get" class="d-flex gap-2">
+                <div class="input-group">
+                    <input type="text" name="searchString" value="@ViewBag.CurrentSearch" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+                    <select name="categoryId" class="form-select" style="max-width: 200px;">
+                        <option value="">Tất cả danh mục</option>
+                        @if (categories != null)
+                        {
+                            foreach (var category in categories)
+                            {
+                                <option value="@category.Id" selected="@(category.Id == (ViewBag?.CurrentCategoryId ?? 0))">@category.Name</option>
+                            }
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" : item.ImageUrl)" 
+                         class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text text-muted">@item.Description</p>
+                        <p class="card-text fw-bold text-primary">@item.Price.ToString("N0") VNĐ</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </a>
+                                }
+                            </div>
+                            <button class="btn btn-primary btn-sm add-to-cart" data-product-id="@item.Id">
+                                <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Không tìm thấy sản phẩm nào</h4>
+            <p class="text-muted">Vui lòng thử lại với từ khóa khác</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Xử lý thêm vào giỏ hàng
+            $('.add-to-cart').click(function() {
+                var button = $(this);
+                var productId = button.data('product-id');
+                
+                // Disable nút để tránh click nhiều lần
+                button.prop('disabled', true);
+                
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: 1 },
+                    success: function(response) {
+                        if (response.success) {
+                            // Hiển thị thông báo thành công
+                            toastr.success('Đã thêm sản phẩm vào giỏ hàng!');
+                            
+                            // Cập nhật số lượng sản phẩm trong giỏ hàng (nếu có)
+                            if (response.cartCount) {
+                                $('.cart-count').text(response.cartCount);
+                            }
+                        } else {
+                            // Hiển thị thông báo lỗi
+                            toastr.error(response.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng');
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+                    },
+                    complete: function() {
+                        // Enable lại nút
+                        button.prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+} 

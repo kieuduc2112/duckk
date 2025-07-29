@@ -1,0 +1,14 @@
+@model KFCWebApp.Models.ComboPromotion
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Xóa khuyến mãi combo";
+}
+<h2>Xóa khuyến mãi combo</h2>
+<div>
+    <h4>Bạn có chắc chắn muốn xóa khuyến mãi combo: <b>@Model.Name</b>?</h4>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div> 

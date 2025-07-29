@@ -1,0 +1,171 @@
+@model KFCWebApp.Models.Order
+@using KFCWebApp.Extensions
+
+@{
+    ViewData["Title"] = "Xóa đơn hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-trash text-danger"></i>
+                        Xác nhận xóa đơn hàng
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Chú ý:</strong> Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xóa đơn hàng này?
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Thông tin đơn hàng</h5>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Mã đơn hàng:</strong></td>
+                                    <td>#@Model.Id</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Khách hàng:</strong></td>
+                                    <td>@Model.CustomerName</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>@Model.Email</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Số điện thoại:</strong></td>
+                                    <td>@Model.PhoneNumber</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Địa chỉ:</strong></td>
+                                    <td>@Model.Address</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Trạng thái:</strong></td>
+                                    <td>
+                                        <span class="badge badge-@(Model.Status switch {
+                                            OrderStatus.Pending => "warning",
+                                            OrderStatus.Processing => "info",
+                                            OrderStatus.Completed => "success",
+                                            OrderStatus.Cancelled => "danger",
+                                            _ => "secondary"
+                                        })">
+                                            @Model.Status.GetDisplayName()
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tổng tiền:</strong></td>
+                                    <td class="text-danger font-weight-bold">@Model.TotalAmount.ToString("N0") VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ngày tạo:</strong></td>
+                                    <td>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Chi tiết đơn hàng</h5>
+                            @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Sản phẩm</th>
+                                                <th>Loại</th>
+                                                <th>Số lượng</th>
+                                                <th>Giá</th>
+                                                <th>Thành tiền</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.OrderDetails)
+                                            {
+                                                <tr>
+                                                    <td>@item.ItemName</td>
+                                                    <td>
+                                                        <span class="badge badge-@(item.ItemType == "Combo" ? "primary" : "info")">
+                                                            @item.ItemType
+                                                        </span>
+                                                    </td>
+                                                    <td>@item.Quantity</td>
+                                                    <td>@item.Price.ToString("N0") VNĐ</td>
+                                                    <td>@((item.Price * item.Quantity).ToString("N0")) VNĐ</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Không có chi tiết đơn hàng</p>
+                            }
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Note))
+                    {
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <h5>Ghi chú</h5>
+                                <p class="text-muted">@Model.Note</p>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.Status == OrderStatus.Completed)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fas fa-ban"></i>
+                            <strong>Không thể xóa:</strong> Đơn hàng đã hoàn thành không thể xóa.
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        @if (Model.Status != OrderStatus.Completed)
+                        {
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                                Xác nhận xóa
+                            </button>
+                        }
+                        
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i>
+                            Quay lại
+                        </a>
+                        
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list"></i>
+                            Danh sách đơn hàng
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Thêm xác nhận trước khi xóa
+            $('form').on('submit', function(e) {
+                if (!confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Hành động này không thể hoàn tác.')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+} 

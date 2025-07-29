@@ -1,0 +1,33 @@
+@model IEnumerable<KFCWebApp.Models.ComboPromotion>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Khuyến mãi combo sản phẩm";
+}
+<h2>Khuyến mãi combo sản phẩm</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">Thêm combo khuyến mãi mới</a>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Tên combo</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+            <th>Phần thưởng</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.StartDate.ToString("dd/MM/yyyy") - @item.EndDate.ToString("dd/MM/yyyy")</td>
+                <td>@(item.IsActive ? "Đang hoạt động" : "Ngừng")</td>
+                <td>@item.RewardType @item.RewardValue</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 

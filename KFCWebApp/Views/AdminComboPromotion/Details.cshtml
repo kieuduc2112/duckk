@@ -1,0 +1,22 @@
+@model KFCWebApp.Models.ComboPromotion
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chi tiết khuyến mãi combo";
+}
+<h2>Chi tiết khuyến mãi combo</h2>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Tên</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+        <dt class="col-sm-2">Mô tả</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+        <dt class="col-sm-2">Từ ngày</dt>
+        <dd class="col-sm-10">@Model.StartDate</dd>
+        <dt class="col-sm-2">Đến ngày</dt>
+        <dd class="col-sm-10">@Model.EndDate</dd>
+        <dt class="col-sm-2">Trạng thái</dt>
+        <dd class="col-sm-10">@(Model.IsActive ? "Đang hoạt động" : "Ngừng")</dd>
+    </dl>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Sửa</a>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div> 

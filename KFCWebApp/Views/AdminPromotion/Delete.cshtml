@@ -1,0 +1,20 @@
+@model KFCWebApp.Models.Promotion
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Xóa khuyến mãi";
+}
+<h2>Xóa khuyến mãi</h2>
+<div class="alert alert-danger">
+    <strong>Bạn có chắc chắn muốn xóa chương trình khuyến mãi này?</strong>
+</div>
+<div class="mb-3">
+    <strong>Tên chương trình:</strong> @Model.Name
+</div>
+<div class="mb-3">
+    <strong>Thời gian:</strong> @Model.StartDate.ToString("dd/MM/yyyy") - @Model.EndDate.ToString("dd/MM/yyyy")
+</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form> 
